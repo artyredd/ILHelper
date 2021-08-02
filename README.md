@@ -221,7 +221,7 @@ var sampleClass = new DynamicAssemblyBuilder("TestAssembly")
     .Implements<ISample>();
 ```
 
-Now when we create a new instance(compile the type) we can check to see if the base class was inherited.
+Now when we create a new instance(compile the type) we can check to see if the interface was implemented.
 
 ```csharp
 object instance = sampleClass.CreateInstance();

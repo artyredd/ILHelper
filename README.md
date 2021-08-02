@@ -279,7 +279,7 @@ Using all of the above tools we can create a complex dynamic type at runtime.
 
 For this example we're going to be replicating the following class in IL.
 ```csharp
-public class SampleClass
+public class SampleClass : IValue
 {
     public int Value 
     {
@@ -300,6 +300,7 @@ public class SampleClass
         flag = true;
     }
 }
+
 public interface IValue
 {
     Value {get; set;}

@@ -5,9 +5,14 @@ VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ILHelperWASM", "ILHelperWASM\ILHelperWASM.csproj", "{F8662DF7-772E-4261-9A6A-6CC09EFC6872}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ILHelper", "ILHelper\ILHelper.csproj", "{70682B4B-9E86-4545-A411-08C7A26CBD99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ILHelper", "ILHelper\ILHelper.csproj", "{70682B4B-9E86-4545-A411-08C7A26CBD99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ILHelper.Tests", "ILHelper.Tests\ILHelper.Tests.csproj", "{9627FE70-A167-49DD-9B51-0A3192E0E1D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ILHelper.Tests", "ILHelper.Tests\ILHelper.Tests.csproj", "{9627FE70-A167-49DD-9B51-0A3192E0E1D5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B545D0BE-3B33-45E1-986C-B371A6D2D1FC}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

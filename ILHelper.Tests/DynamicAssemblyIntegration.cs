@@ -191,6 +191,32 @@ namespace ILHelper.Tests
             Assert.True(instance is BlankClass);
         }
 
+        [Fact]
+        public void TestComplexType()
+        {
+            var sampleClass = new DynamicAssemblyBuilder("TestAssembly")
+                .CreateType("SampleClass")
+                .Implements(typeof(IBlankInterface))
+                .CreateField<bool>("flag", FieldAttributes.Private, false)
+                .CreateProperty<int>("Value")
+                .CreateField<string>("Name", string.Empty)
+                .CreateMethod("SetFlag")
+                    .Returns(typeof(void))
+                    .Accepts<bool>()
+                    .Emit(OpCodes.Ldarg_0)
+                    .Emit(OpCodes.Ldarg_1)
+                    .Emit(OpCodes.Stfld, "flag")
+                    .Return();
+
+            dynamic instance = (dynamic)sampleClass.CreateInstance();
+
+            instance.SetFlag(true);
+
+            bool result = (bool)((object)instance).GetType().GetField("flag", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(instance);
+
+            Assert.True(result);
+        }
+
         public interface IBlankInterface
         {
 

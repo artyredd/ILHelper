@@ -8,10 +8,10 @@ namespace ILHelper.Linter
 {
     public class StackElement : IStackElement
     {
-        public StackElementType ElementType { get; set; } = StackElementType.None;
+        public StackVerificationType VerificationType { get; set; } = StackVerificationType.Object;
 
-        public object Value { get; set; }
+        public Type UnderlyingType { get; set; }
 
-        public bool HasValue => Value is not null;
+        public bool HasType => UnderlyingType is not null;
     }
 }

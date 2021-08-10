@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,9 +10,7 @@ namespace ILHelper.Linter
 {
     public class RuleCollection<T>
     {
-        public ICollection<Rule<T>> Rules { get; private set; } = new List<Rule<T>>();
-
-        private Rule<T>? LastChanged = null;
+        public ICollection<RuleBase<T>> Rules { get; private set; } = new List<RuleBase<T>>();
 
         public bool ForceProcessAllRules { get; set; } = false;
 
@@ -42,6 +41,16 @@ namespace ILHelper.Linter
             return true;
         }
 
+        public MemberRule<U, T> RequireProperty<U>(Func<T, string> MemberName)
+        {
+            return CreateAndAdd<U>(MemberName(default!), MemberTypes.Property);
+        }
+
+        public MemberRule<U, T> RequireProperty<U>(string MemberName)
+        {
+            return CreateAndAdd<U>(MemberName, MemberTypes.Property);
+        }
+
         public Rule<T> Disallow(Func<T, bool> Expression)
         {
             var newRule = CreateAndAdd(Expression);
@@ -56,13 +65,29 @@ namespace ILHelper.Linter
             return CreateAndAdd(Expression);
         }
 
+        public void Clear()
+        {
+            Rules.Clear();
+        }
+
         private Rule<T> CreateAndAdd(Func<T, bool> Expression)
         {
             Rule<T> newRule = new(Expression);
 
             Rules.Add(newRule);
 
-            LastChanged = newRule;
+            return newRule;
+        }
+
+        private MemberRule<U, T> CreateAndAdd<U>(string MemberName, MemberTypes MemberType)
+        {
+            MemberRule<U, T> newRule = new MemberRule<U, T>()
+            {
+                MemberName = MemberName,
+                MemberType = MemberType
+            };
+
+            Rules.Add(newRule);
 
             return newRule;
         }

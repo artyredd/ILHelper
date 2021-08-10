@@ -225,6 +225,386 @@ namespace ILHelper.Tests
         }
 
 
+        [Fact]
+        public void Test_Properties()
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>("Id")
+                .NotNull();
+
+            var instance = new TestClass();
+
+            Assert.True(ruleset.Evaluate(instance));
+        }
+
+        [Fact]
+        public void Test_Properties_Name()
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .NotNull();
+
+            var instance = new TestClass();
+
+            Assert.True(ruleset.Evaluate(instance));
+        }
+
+        [Fact]
+        public void Test_Properties_NotNull()
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<string>(x => nameof(x.Name))
+                .NotNull();
+
+            var instance = new TestClass();
+
+            Assert.True(ruleset.Evaluate(instance));
+
+            instance.Name = null;
+
+            Assert.False(ruleset.Evaluate(instance));
+        }
+
+        [Fact]
+        public void Test_Properties_Null()
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<string>(x => nameof(x.Name))
+                .Null();
+
+            var instance = new TestClass();
+
+            Assert.False(ruleset.Evaluate(instance));
+
+            instance.Name = null;
+
+            Assert.True(ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(1, 2, false)]
+        [InlineData(2, 2, true)]
+        [InlineData(3, 2, false)]
+        [InlineData(99, 2, false)]
+        public void Test_Equals(int input, int other, bool expected)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .EqualTo(other);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(1, true, 1, 2, 3, 4, 5)]
+        [InlineData(2, true, 1, 2, 3, 4, 5)]
+        [InlineData(0, false, 1, 2, 3, 4, 5)]
+        [InlineData(5, true, 1, 2, 3, 4, 5)]
+        [InlineData(99, false, 1, 2, 3, 4, 5)]
+        public void Test_EqualsAny(int input, bool expected, params int[] others)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .EqualToAny(others);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(-1, false, 1, 2, 3, 4, 5)]
+        [InlineData(0, false, 1, 2, 3, 4, 5)]
+        [InlineData(2, false, 1, 2, 3, 4, 5)]
+        [InlineData(5, false, 1, 2, 3, 4, 5)]
+        [InlineData(99, false, 1, 2, 3, 4, 5)]
+        [InlineData(1, true, 1, 1, 1, 1, 1)]
+        [InlineData(2, true, 2, 2)]
+        public void Test_EqualsAll(int input, bool expected, params int[] others)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .EqualToAll(others);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(1, 2, false)]
+        [InlineData(2, 2, false)]
+        [InlineData(3, 2, true)]
+        [InlineData(99, 2, true)]
+        public void Test_GreaterThan(int input, int other, bool expected)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .GreaterThan(other);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(1, false, 1, 2, 3, 4, 5)]
+        [InlineData(2, true, 1, 2, 3, 4, 5)]
+        [InlineData(0, false, 1, 2, 3, 4, 5)]
+        [InlineData(5, true, 1, 2, 3, 4, 5)]
+        [InlineData(99, true, 1, 2, 3, 4, 5)]
+        public void Test_GreaterThanAny(int input, bool expected, params int[] others)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .GreaterThanAny(others);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(-1, false, 1, 2, 3, 4, 5)]
+        [InlineData(0, false, 1, 2, 3, 4, 5)]
+        [InlineData(2, false, 1, 2, 3, 4, 5)]
+        [InlineData(5, false, 1, 2, 3, 4, 5)]
+        [InlineData(99, true, 1, 2, 3, 4, 5)]
+        public void Test_GreaterThanAll(int input, bool expected, params int[] others)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .GreaterThanAll(others);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(1, 2, false)]
+        [InlineData(2, 2, true)]
+        [InlineData(0, 2, false)]
+        [InlineData(99, 2, true)]
+        public void Test_GreaterThanEqual(int input, int other, bool expected)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .GreaterThanOrEqualTo(other);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(1, true, 1, 2, 3, 4, 5)]
+        [InlineData(2, true, 1, 2, 3, 4, 5)]
+        [InlineData(0, false, 1, 2, 3, 4, 5)]
+        [InlineData(5, true, 1, 2, 3, 4, 5)]
+        [InlineData(6, true, 1, 2, 3, 4, 5)]
+        [InlineData(99, true, 1, 2, 3, 4, 5)]
+        public void Test_GreaterThanEqualAny(int input, bool expected, params int[] others)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .GreaterThanOrEqualToAny(others);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(-1, false, 1, 2, 3, 4, 5)]
+        [InlineData(0, false, 1, 2, 3, 4, 5)]
+        [InlineData(2, false, 1, 2, 3, 4, 5)]
+        [InlineData(5, true, 1, 2, 3, 4, 5)]
+        [InlineData(99, true, 1, 2, 3, 4, 5)]
+        public void Test_GreaterThanEqualAll(int input, bool expected, params int[] others)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .GreaterThanOrEqualToAll(others);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(1, 2, true)]
+        [InlineData(2, 2, false)]
+        [InlineData(0, 2, true)]
+        [InlineData(99, 2, false)]
+        public void Test_LessThan(int input, int other, bool expected)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .LessThan(other);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(1, true, 1, 2, 3, 4, 5)]
+        [InlineData(2, true, 1, 2, 3, 4, 5)]
+        [InlineData(0, true, 1, 2, 3, 4, 5)]
+        [InlineData(5, false, 1, 2, 3, 4, 5)]
+        [InlineData(99, false, 1, 2, 3, 4, 5)]
+        public void Test_LessThanAny(int input, bool expected, params int[] others)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .LessThanAny(others);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(-1, true, 1, 2, 3, 4, 5)]
+        [InlineData(0, true, 1, 2, 3, 4, 5)]
+        [InlineData(2, false, 1, 2, 3, 4, 5)]
+        [InlineData(5, false, 1, 2, 3, 4, 5)]
+        [InlineData(99, false, 1, 2, 3, 4, 5)]
+        public void Test_LessThanAll(int input, bool expected, params int[] others)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .LessThanAll(others);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(1, 2, true)]
+        [InlineData(2, 2, true)]
+        [InlineData(0, 2, true)]
+        [InlineData(99, 2, false)]
+        public void Test_LessThanEqual(int input, int other, bool expected)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .LessThanOrEqualTo(other);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(1, true, 1, 2, 3, 4, 5)]
+        [InlineData(2, true, 1, 2, 3, 4, 5)]
+        [InlineData(0, true, 1, 2, 3, 4, 5)]
+        [InlineData(5, true, 1, 2, 3, 4, 5)]
+        [InlineData(6, false, 1, 2, 3, 4, 5)]
+        [InlineData(99, false, 1, 2, 3, 4, 5)]
+        public void Test_LessThanEqualAny(int input, bool expected, params int[] others)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .LessThanOrEqualToAny(others);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(-1, true, 1, 2, 3, 4, 5)]
+        [InlineData(0, true, 1, 2, 3, 4, 5)]
+        [InlineData(2, false, 1, 2, 3, 4, 5)]
+        [InlineData(5, false, 1, 2, 3, 4, 5)]
+        [InlineData(99, false, 1, 2, 3, 4, 5)]
+        public void Test_LessThanEqualAll(int input, bool expected, params int[] others)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .LessThanOrEqualToAll(others);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Fact]
+        public void Test_Properties_LessThanorEqual()
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .LessThanOrEqualTo(13);
+
+            var instance = new TestClass();
+
+            Assert.True(ruleset.Evaluate(instance));
+
+            instance.Id = 13;
+
+            Assert.True(ruleset.Evaluate(instance));
+
+            instance.Id = 99;
+
+            Assert.False(ruleset.Evaluate(instance));
+        }
+
         private class TestClass
         {
             public int Id { get; set; } = 1;

@@ -12,7 +12,7 @@ namespace ILHelper.Helpers
     {
         public static Exception Generic(string Message, [CallerMemberName] string Name = "", [CallerFilePath] string FilePath = "", [CallerLineNumber] int LineNumber = -1)
         {
-            return new Exception($"{Message}{Environment.NewLine}\tin{Name}{Environment.NewLine}\tat{FilePath} [{LineNumber}]");
+            return new Exception($"{Message}{Environment.NewLine}\tin {Name}{Environment.NewLine}\tat {FilePath} [{LineNumber}]");
         }
 
         public static string Consume(Exception e, StringBuilder exceptionBuilder = null, bool includeCallerInfo = true, [CallerMemberName] string Name = "", [CallerFilePath] string FilePath = "", [CallerLineNumber] int LineNumber = -1)

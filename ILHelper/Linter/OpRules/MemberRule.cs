@@ -344,6 +344,13 @@ namespace ILHelper.Linter
             return this;
         }
 
+        public virtual MemberRule<T, TParent> WithMessage(string Message)
+        {
+            BackingRule?.WithMessage(Message);
+
+            return this;
+        }
+
         private void AddMultiExpression<U>(IEnumerable<U> Values, Func<T, U, bool> Expression, SubruleType RuleType)
         {
             if (RuleType.Contains(SubruleType.LogicalAND))

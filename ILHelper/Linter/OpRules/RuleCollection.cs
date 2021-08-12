@@ -51,6 +51,16 @@ namespace ILHelper.Linter
             return CreateAndAdd<U>(MemberName, MemberTypes.Property);
         }
 
+        public MemberRule<U, T> RequireField<U>(Func<T, string> MemberName)
+        {
+            return CreateAndAdd<U>(MemberName(default!), MemberTypes.Field);
+        }
+
+        public MemberRule<U, T> RequireField<U>(string MemberName)
+        {
+            return CreateAndAdd<U>(MemberName, MemberTypes.Field);
+        }
+
         public Rule<T> Disallow(Func<T, bool> Expression)
         {
             var newRule = CreateAndAdd(Expression);

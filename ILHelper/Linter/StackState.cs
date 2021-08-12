@@ -17,7 +17,7 @@ namespace ILHelper.Linter
         private readonly IStackElementFactory Factory = new StackElementFactory();
 
         // https://www.ecma-international.org/wp-content/uploads/ECMA-335_6th_edition_june_2012.pdf CLS §III.1.8.1.2.1
-        private readonly IMapper<Type, StackVerificationType> s_Mapper = new GenericMapper<Type, StackVerificationType>();
+        private readonly IMapper<Type, StackVerificationType> Mapper = new GenericMapper<Type, StackVerificationType>();
 
         public bool HasTop => Stack.Count >= 1;
 
@@ -73,7 +73,7 @@ namespace ILHelper.Linter
         private IStackElement Create(Type underlyingType)
         {
             // get the verification types of any primitives
-            if (s_Mapper.TryGet(underlyingType, out StackVerificationType verificationType))
+            if (Mapper.TryGet(underlyingType, out StackVerificationType verificationType))
             {
                 return Factory.Create(underlyingType, verificationType);
             }
@@ -99,27 +99,27 @@ namespace ILHelper.Linter
             // mapp values to conform with CLS §III.1.8.1.2.1
 
             // mapp CLI type to Stack state type
-            s_Mapper.Map(typeof(sbyte), StackVerificationType.Int32)
+            Mapper.Map(typeof(sbyte), StackVerificationType.Int32)
                     .Map(typeof(bool), StackVerificationType.Int32)
                     .Map(typeof(byte), StackVerificationType.Int32);
 
-            s_Mapper.Map(typeof(short), StackVerificationType.Int32)
+            Mapper.Map(typeof(short), StackVerificationType.Int32)
                     .Map(typeof(ushort), StackVerificationType.Int32)
                     .Map(typeof(char), StackVerificationType.Int32);
 
-            s_Mapper.Map(typeof(int), StackVerificationType.Int32)
+            Mapper.Map(typeof(int), StackVerificationType.Int32)
                     .Map(typeof(uint), StackVerificationType.Int32);
 
-            s_Mapper.Map(typeof(long), StackVerificationType.Int64)
+            Mapper.Map(typeof(long), StackVerificationType.Int64)
                     .Map(typeof(ulong), StackVerificationType.Int64);
 
-            s_Mapper.Map(typeof(IntPtr), StackVerificationType.NativeInt)
+            Mapper.Map(typeof(IntPtr), StackVerificationType.NativeInt)
                     .Map(typeof(UIntPtr), StackVerificationType.NativeInt);
 
-            s_Mapper.Map(typeof(float), StackVerificationType.Float64)
+            Mapper.Map(typeof(float), StackVerificationType.Float64)
                     .Map(typeof(double), StackVerificationType.Float64);
 
-            s_Mapper.Map(typeof(decimal), StackVerificationType.Float64);
+            Mapper.Map(typeof(decimal), StackVerificationType.Float64);
         }
     }
 }

@@ -584,6 +584,68 @@ namespace ILHelper.Tests
             Assert.Equal(expected, ruleset.Evaluate(instance));
         }
 
+        [Theory]
+        [InlineData(1, 2, true)]
+        [InlineData(2, 2, false)]
+        [InlineData(0, 2, true)]
+        [InlineData(99, 2, true)]
+        [InlineData(0, 0, false)]
+        public void Test_NotEqual(int input, int other, bool expected)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .NotEqualTo(other);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(1, true, 1, 2, 3, 4, 5)]
+        [InlineData(2, true, 1, 2, 3, 4, 5)]
+        [InlineData(0, true, 1, 2, 3, 4, 5)]
+        [InlineData(5, true, 1, 2, 3, 4, 5)]
+        [InlineData(6, true, 1, 2, 3, 4, 5)]
+        [InlineData(99, true, 1, 2, 3, 4, 5)]
+        [InlineData(1, false, 1, 1, 1, 1, 1)]
+        public void Test_NotEqualAny(int input, bool expected, params int[] others)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .NotEqualToAny(others);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(-1, true, 1, 2, 3, 4, 5)]
+        [InlineData(0, true, 1, 2, 3, 4, 5)]
+        [InlineData(2, false, 1, 2, 3, 4, 5)]
+        [InlineData(5, false, 1, 2, 3, 4, 5)]
+        [InlineData(99, true, 1, 2, 3, 4, 5)]
+        public void Test_NotEqualAll(int input, bool expected, params int[] others)
+        {
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .NotEqualToAll(others);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
         [Fact]
         public void Test_Properties_LessThanorEqual()
         {
@@ -605,11 +667,185 @@ namespace ILHelper.Tests
             Assert.False(ruleset.Evaluate(instance));
         }
 
+        [Theory]
+        [InlineData(1, 2, true)]
+        [InlineData(2, 2, false)]
+        [InlineData(0, 2, true)]
+        [InlineData(99, 2, true)]
+        [InlineData(0, 0, false)]
+        public void Test_NotEqualDifferentType(byte input, int other, bool expected)
+        {
+            var other_casted = new IntKnockoff(other);
+
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .NotEqualTo(other_casted);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(1, true, 1, 2, 3, 4, 5)]
+        [InlineData(2, true, 1, 2, 3, 4, 5)]
+        [InlineData(0, true, 1, 2, 3, 4, 5)]
+        [InlineData(5, true, 1, 2, 3, 4, 5)]
+        [InlineData(6, true, 1, 2, 3, 4, 5)]
+        [InlineData(99, true, 1, 2, 3, 4, 5)]
+        [InlineData(1, false, 1, 1, 1, 1, 1)]
+        public void Test_NotEqualAnyDifferentType(byte input, bool expected, params int[] others)
+        {
+            var others_casted = new IntKnockoff[others.Length];
+
+            for (int i = 0; i < others.Length; i++)
+            {
+                others_casted[i] = new(others[i]);
+            }
+
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .NotEqualToAny(others_casted);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(72, true, 1, 2, 3, 4, 5)]
+        [InlineData(0, true, 1, 2, 3, 4, 5)]
+        [InlineData(2, false, 1, 2, 3, 4, 5)]
+        [InlineData(5, false, 1, 2, 3, 4, 5)]
+        [InlineData(99, true, 1, 2, 3, 4, 5)]
+        public void Test_NotEqualAllDifferentType(byte input, bool expected, params int[] others)
+        {
+            var others_casted = new IntKnockoff[others.Length];
+
+            for (int i = 0; i < others.Length; i++)
+            {
+                others_casted[i] = new(others[i]);
+            }
+
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .NotEqualToAll(others_casted);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(1, 2, false)]
+        [InlineData(2, 2, true)]
+        [InlineData(3, 2, false)]
+        [InlineData(99, 2, false)]
+        public void Test_EqualDifferentType(byte input, int other, bool expected)
+        {
+            var other_casted = new IntKnockoff(other);
+
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .EqualTo(other_casted);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(1, true, 1, 2, 3, 4, 5)]
+        [InlineData(2, true, 1, 2, 3, 4, 5)]
+        [InlineData(0, false, 1, 2, 3, 4, 5)]
+        [InlineData(5, true, 1, 2, 3, 4, 5)]
+        [InlineData(99, false, 1, 2, 3, 4, 5)]
+        public void Test_EqualAnyDifferentType(byte input, bool expected, params int[] others)
+        {
+            var others_casted = new IntKnockoff[others.Length];
+
+            for (int i = 0; i < others.Length; i++)
+            {
+                others_casted[i] = new(others[i]);
+            }
+
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .EqualToAny(others_casted);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
+        [Theory]
+        [InlineData(0, false, 1, 2, 3, 4, 5)]
+        [InlineData(2, false, 1, 2, 3, 4, 5)]
+        [InlineData(5, false, 1, 2, 3, 4, 5)]
+        [InlineData(99, false, 1, 2, 3, 4, 5)]
+        [InlineData(1, true, 1, 1, 1, 1, 1)]
+        [InlineData(2, true, 2, 2)]
+        public void Test_EqualAllDifferentType(byte input, bool expected, params int[] others)
+        {
+            var others_casted = new IntKnockoff[others.Length];
+
+            for (int i = 0; i < others.Length; i++)
+            {
+                others_casted[i] = new(others[i]);
+            }
+
+            var ruleset = new RuleCollection<TestClass>();
+
+            ruleset.RequireProperty<int>(x => nameof(x.Id))
+                .EqualToAll(others_casted);
+
+            var instance = new TestClass();
+
+            instance.Id = input;
+
+            Assert.Equal(expected, ruleset.Evaluate(instance));
+        }
+
         private class TestClass
         {
             public int Id { get; set; } = 1;
             public string Name { get; set; } = nameof(TestClass);
             public int[] Numbers { get; set; } = { 1, 2, 3, 4, 5 };
+        }
+
+        public class IntKnockoff : IComparable<int>, IEquatable<int>
+        {
+            public int Value { get; set; } = 0;
+
+            public IntKnockoff(int value)
+            {
+                Value = value;
+            }
+
+            public int CompareTo(int other)
+            {
+                return Value.CompareTo(other);
+            }
+
+            public bool Equals(int other)
+            {
+                return Value.Equals(other);
+            }
         }
     }
 }

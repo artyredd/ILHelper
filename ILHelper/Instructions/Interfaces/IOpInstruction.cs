@@ -4,6 +4,7 @@ namespace ILHelper
 {
     public interface IOpInstruction
     {
+        OpCode Instruction { get; }
         void Emit(ILGenerator Generator);
     }
 }

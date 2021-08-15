@@ -22,6 +22,12 @@ namespace ILHelper.Linter
         /// </summary>
         private readonly Dictionary<TKey, Dictionary<TSubkey, BitMask>> BackingDictionary = new();
 
+        /// <summary>
+        /// Used when the value is a power of two and non-sequential. Ie.. 2 4 8 16 64 etc..
+        /// </summary>
+        /// <param name="Key"></param>
+        /// <param name="Subkey"></param>
+        /// <param name="Value"></param>
         public void AddValue(TKey Key, TSubkey Subkey, int Value)
         {
             if (BackingDictionary.ContainsKey(Key))
@@ -37,6 +43,12 @@ namespace ILHelper.Linter
             BackingDictionary.Add(Key, newDict);
         }
 
+        /// <summary>
+        /// Used when the value is a number between 0 and 31 representing the index of the backing int that should have the value of 1
+        /// </summary>
+        /// <param name="Key"></param>
+        /// <param name="Subkey"></param>
+        /// <param name="Value"></param>
         public void AddIndex(TKey Key, TSubkey Subkey, int Index)
         {
             if (BackingDictionary.ContainsKey(Key))
@@ -52,16 +64,34 @@ namespace ILHelper.Linter
             BackingDictionary.Add(Key, newDict);
         }
 
+        /// <summary>
+        /// Used when the value is a power of two and non-sequential. Ie.. 2 4 8 16 64 etc..
+        /// </summary>
+        /// <param name="Key"></param>
+        /// <param name="Subkey"></param>
+        /// <param name="Value"></param>
         public void AddValue<V>(TKey Key, TSubkey Subkey, V Value) where V : struct, System.Enum, IConvertible
         {
             AddValue(Key, Subkey, Value.ToInt32(null));
         }
 
+        /// <summary>
+        /// Used when the value is a number between 0 and 31 representing the index of the backing int that should have the value of 1
+        /// </summary>
+        /// <param name="Key"></param>
+        /// <param name="Subkey"></param>
+        /// <param name="Value"></param>
         public void AddIndex<TEnum>(TKey Key, TSubkey Subkey, TEnum Index) where TEnum : struct, System.Enum, IConvertible
         {
             AddIndex(Key, Subkey, Index.ToInt32(null));
         }
 
+        /// <summary>
+        /// Used when the value is a power of two and non-sequential. Ie.. 2 4 8 16 64 etc..
+        /// </summary>
+        /// <param name="Key"></param>
+        /// <param name="Subkey"></param>
+        /// <param name="Value"></param>
         public bool ContainsValue(TKey Key, TSubkey Subkey, int Value)
         {
             if (BackingDictionary.ContainsKey(Key))
@@ -74,6 +104,12 @@ namespace ILHelper.Linter
             return false;
         }
 
+        /// <summary>
+        /// Used when the value is a number between 0 and 31 representing the index of the backing int that should have the value of 1
+        /// </summary>
+        /// <param name="Key"></param>
+        /// <param name="Subkey"></param>
+        /// <param name="Value"></param>
         public bool ContainsIndex(TKey Key, TSubkey Subkey, int Index)
         {
             if (BackingDictionary.ContainsKey(Key))
@@ -86,6 +122,12 @@ namespace ILHelper.Linter
             return false;
         }
 
+        /// <summary>
+        /// Used when the value is a power of two and non-sequential. Ie.. 2 4 8 16 64 etc..
+        /// </summary>
+        /// <param name="Key"></param>
+        /// <param name="Subkey"></param>
+        /// <param name="Value"></param>
         public bool ContainsValue<TEnum>(TKey Key, TSubkey Subkey, TEnum Value) where TEnum : struct, System.Enum, IConvertible
         {
             if (BackingDictionary.ContainsKey(Key))
@@ -98,6 +140,12 @@ namespace ILHelper.Linter
             return false;
         }
 
+        /// <summary>
+        /// Used when the value is a number between 0 and 31 representing the index of the backing int that should have the value of 1
+        /// </summary>
+        /// <param name="Key"></param>
+        /// <param name="Subkey"></param>
+        /// <param name="Value"></param>
         public bool ContainsIndex<TEnum>(TKey Key, TSubkey Subkey, TEnum Index) where TEnum : struct, System.Enum, IConvertible
         {
             if (BackingDictionary.ContainsKey(Key))

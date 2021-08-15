@@ -70,6 +70,11 @@ namespace ILHelper.Linter
             return success;
         }
 
+        public void Push(Type underlyingType)
+        {
+            Stack.Push(Create(underlyingType));
+        }
+
         private IStackElement Create(Type underlyingType)
         {
             // get the verification types of any primitives

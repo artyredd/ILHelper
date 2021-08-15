@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ILHelper.Linter;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -7,15 +8,17 @@ using System.Threading;
 #nullable enable
 namespace ILHelper
 {
-    public class DynamicMethodBuilder : BuilderBase, IDynamicMethodBuilder
+    public class DynamicMethodBuilder : BuilderBase, IDynamicMethodBuilder, IMethod
     {
         public string Name { get; set; } = "NewMethod";
 
-        public List<IOpInstruction> Instructions { get; set; } = new();
+        public IList<IOpInstruction> Instructions { get; set; } = new List<IOpInstruction>();
 
-        public List<Type> ParameterTypes { get; set; } = new();
+        public IList<Type> ParameterTypes { get; set; } = new List<Type>();
 
         public Type ReturnType { get; set; } = typeof(void);
+
+        public MethodAttributes Attributes { get; set; }
 
         private DynamicMethod? Method;
         private readonly MethodBuilder? Builder;
@@ -176,7 +179,7 @@ namespace ILHelper
 
             Builder.SetReturnType(ReturnType);
 
-            Builder.SetParameters(ParameterTypes.ToArray());
+            Builder.SetParameters(((List<Type>)ParameterTypes).ToArray());
 
             return Builder.GetILGenerator();
         }
@@ -184,7 +187,7 @@ namespace ILHelper
         private DynamicMethod CreateMethod()
         {
             // there may be a possibility of changing types during runtime, avoid race condition with invoke critical
-            Type[] parameterTypes = InvokeCritical(() => ParameterTypes.ToArray());
+            Type[] parameterTypes = InvokeCritical(() => ((List<Type>)ParameterTypes).ToArray());
 
             return new DynamicMethod(
                 Name,
@@ -196,7 +199,7 @@ namespace ILHelper
         private void EmitInstructions(ILGenerator generator)
         {
             // safely get a copy of the instructions and emit them to the method
-            Span<IOpInstruction> instructions = InvokeCritical(() => Instructions.ToArray());
+            Span<IOpInstruction> instructions = InvokeCritical(() => ((List<IOpInstruction>)Instructions).ToArray());
 
             for (int i = 0; i < instructions.Length; i++)
             {

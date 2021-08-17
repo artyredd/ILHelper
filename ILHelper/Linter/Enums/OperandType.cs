@@ -33,8 +33,28 @@ namespace ILHelper.Linter
         /// </summary>
         EqualityComparison,
         /// <summary>
+        /// and, div.un, not, or, rem.un, xor
+        /// </summary>
+        Integer,
+        /// <summary>
         /// shl, shr
         /// </summary>
-        Integer
+        Shift,
+        /// <summary>
+        /// add.ovf, add.ovf.un, mul.ovf, mul.ovf.un, sub.ovf, sub.ovf.un
+        /// </summary>
+        OverflowArithmetic,
+        /// <summary>
+        /// add.ovf.un
+        /// </summary>
+        OverflowAddUnsigned,
+        /// <summary>
+        /// sub.ovf.un
+        /// </summary>
+        OverflowSubUnsigned,
+        /// <summary>
+        /// conv.<to type>, conv.ovf.<to type>, and conv.ovf.<to type>.un
+        /// </summary>
+        Convert,
     }
 }
